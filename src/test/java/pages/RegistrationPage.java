@@ -2,10 +2,11 @@ package pages;
 
 import com.codeborne.selenide.SelenideElement;
 import org.openqa.selenium.By;
-import pages.Components.CalendarComponent;
+import pages.components.CalendarComponent;
 
 import java.io.File;
 
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
@@ -13,6 +14,7 @@ import static com.codeborne.selenide.Selenide.open;
 
 public class RegistrationPage {
 
+    // components
     CalendarComponent calendarComponent = new CalendarComponent();
 
     // locators
@@ -26,11 +28,6 @@ public class RegistrationPage {
     private SelenideElement hobbieRadio = $("#hobbiesWrapper");
     private SelenideElement userAddress = $("#currentAddress");
     private SelenideElement submitButton = $("#submit");
-    private SelenideElement stateStateCity = $("#state");
-    private SelenideElement stateCityWrapperNCR = $("#stateCity-wrapper").$(byText("NCR"));
-    private SelenideElement stateCity = $("#city");
-    private SelenideElement stateCityWrapperDelhi = $("#stateCity-wrapper").$(byText("Delhi"));
-
     private SelenideElement modalContent = $(".modal-content");
     public SelenideElement tableResponsive =  $(".table-responsive");
 
@@ -69,8 +66,8 @@ public class RegistrationPage {
         subjectsInput.setValue(subject).pressEnter();
     }
 
-    public void imgPicture() {
-        uploadPictureForm.uploadFile(new File("src/test/resources/upload-folder/homeAlone.jpeg"));
+    public void setImgPicture(String imgPath) {
+        uploadPictureForm.uploadFile(new File(imgPath));
     }
 
     public void chooseHobie(String hobie) {
@@ -85,20 +82,11 @@ public class RegistrationPage {
         submitButton.scrollTo();
     }
 
-    public void choiceStateCityWrapperNCR() {
-        stateStateCity.find(byText("NCR")).click();
-    }
-
-    public void choiceStateStateCity() {
-        stateStateCity.scrollTo().click();
-    }
-
-    public void choiceStateCity() {
-        stateCity.click();
-    }
-
-    public void choiceStateCityWrapperNoida() {
-        stateCityWrapperDelhi.scrollTo().click();
+    public void setStateAndCity(String state, String city) {
+        $("#stateCity-wrapper").scrollTo().find(("#state")).click();
+        $(byText(state)).click();
+        $("#stateCity-wrapper").scrollTo().find(("#city")).click();
+        $(byText(city)).click();
     }
 
     public void pressSubmitButton() {
@@ -106,9 +94,14 @@ public class RegistrationPage {
     }
 
     // asserts
-
     public void checkModalContent() {
         modalContent.shouldBe(visible);
+    }
+
+    public void checkForm(String firstName, String lastName, String userEmail, String userNumber, String day, String month, String year,  String userGender, String hobie, String address, String state, String city) {
+        tableResponsive.shouldHave(text(firstName), text(lastName),
+                text(userEmail), text(day), text(month), text(year), text(userGender), text(hobie), text(address),
+                text(userNumber), text(state), text(city));
     }
 
 
